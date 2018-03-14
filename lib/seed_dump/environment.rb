@@ -11,6 +11,12 @@ class SeedDump
       models.each do |model|
         model = model.limit(limit) if limit.present?
 
+        if model.column_names.include?('company_id')
+          model = model.where('company_id < 10 OR company_id % 20 = 0')
+        elsif model == Company
+          model = model.where('id < 10 OR id % 20 = 0')
+        end
+
         SeedDump.dump(model,
                       append: append,
                       batch_size: retrieve_batch_size_value(env),
