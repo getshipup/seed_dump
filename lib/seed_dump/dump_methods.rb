@@ -21,7 +21,7 @@ class SeedDump
       # We select only string attribute names to avoid conflict
       # with the composite_primary_keys gem (it returns composite
       # primary key attribute names as hashes).
-      record.attributes.select {|key| key.is_a?(String) }.each do |attribute, value|
+      record.attributes.select {|key| key.is_a?(String) || key.is_a?(Symbol) }.each do |attribute, value|
         attribute_strings << dump_attribute_new(attribute, value, options) unless options[:exclude].include?(attribute.to_sym)
       end
 
@@ -89,7 +89,7 @@ class SeedDump
         io.write(",\n  ") unless last_batch
       end
 
-      io.write("\n])\n")
+      io.write("\n]#{active_record_import_options(options)})\n")
 
       if options[:file].present?
         nil
@@ -97,6 +97,12 @@ class SeedDump
         io.rewind
         io.read
       end
+    end
+
+    def active_record_import_options(options)
+      return unless options[:import] && options[:import].is_a?(Hash)
+
+      ', ' + options[:import].map { |key, value| "#{key}: #{value}" }.join(', ')
     end
 
     def attribute_names(records, options)
