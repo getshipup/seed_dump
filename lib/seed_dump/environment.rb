@@ -91,11 +91,18 @@ class SeedDump
       parse_boolean_value(env['APPEND'])
     end
 
-    # Internal: Returns a Boolean indicating whether the value for the "IMPORT"
-    # key in the given Hash is equal to the String "true" (ignoring case),
-    # false if  no value exists.
     def retrieve_import_value(env)
-      parse_boolean_value(env['IMPORT'])
+      import = parse_boolean_value(env['IMPORT'])
+      return false unless import
+      
+      {
+        validate: retrieve_validate_value(env)
+      }
+    end
+
+    # Defaults to true if not provided
+    def retrieve_validate_value(env)
+      env['VALIDATE'] ? env['VALIDATE'] == 'true' : true
     end
 
     # Internal: Retrieves an Array of Class constants parsed from the value for
