@@ -12,9 +12,9 @@ class SeedDump
         model = model.limit(limit) if limit.present?
 
         if model == Company
-          model = model.where('id < 10 OR id % 1000 = 0')
+          model = model.where('id < 3')
         elsif model.column_names.include?('company_id')
-          model = model.where('company_id IS NULL OR company_id < 10 OR company_id % 1000 = 0')
+          model = model.where('company_id IS NULL OR company_id < 3')
         end
 
         SeedDump.dump(model,
