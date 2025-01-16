@@ -13,6 +13,8 @@ class SeedDump
 
         if model == Company
           model = model.where('id < 3')
+        elsif model == BillingOrganization
+          model = model.where('id < 3')
         elsif model.column_names.include?('company_id')
           model = model.where('company_id IS NULL OR company_id < 3')
         end
